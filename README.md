@@ -10,6 +10,8 @@ Aether is a game engine, that totally sucks. Don't use it
 
 ## What I want to add, but probably am not capable of
 * In-built Code Editor
+* Play testing in editor
+* Material editors and other stuff
 * Other cool features popular game engines have
 
 Until then, we wait. (Well actually I code but... nevermind)
