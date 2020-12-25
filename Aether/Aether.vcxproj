@@ -147,6 +147,10 @@
     <ClInclude Include="src\Aether\Application.h" />
     <ClInclude Include="src\Aether\Core.h" />
     <ClInclude Include="src\Aether\EntryPoint.h" />
+    <ClInclude Include="src\Aether\Events\ApplicationEvent.h" />
+    <ClInclude Include="src\Aether\Events\Event.h" />
+    <ClInclude Include="src\Aether\Events\KeyEvent.h" />
+    <ClInclude Include="src\Aether\Events\MouseEvent.h" />
     <ClInclude Include="src\Aether\Log.h" />
   </ItemGroup>
   <ItemGroup>

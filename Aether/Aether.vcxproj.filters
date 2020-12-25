@@ -19,6 +19,10 @@
     <ClInclude Include="src\Aether\Log.h">
       <Filter>Aether</Filter>
     </ClInclude>
+    <ClInclude Include="src\Aether\Events\Event.h" />
+    <ClInclude Include="src\Aether\Events\ApplicationEvent.h" />
+    <ClInclude Include="src\Aether\Events\KeyEvent.h" />
+    <ClInclude Include="src\Aether\Events\MouseEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Aether\Application.cpp">

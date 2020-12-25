@@ -10,8 +10,20 @@ Aether is a game engine, that totally sucks. Don't use it
 
 ## What I want to add, but probably am not capable of
 * In-built Code Editor
-* Play testing in editor
-* Material editors and other stuff
+* In-Editor Play Test
 * Other cool features popular game engines have
 
 Until then, we wait. (Well actually I code but... nevermind)
+
+
+## Getting started?
+* Clone the repository into an empty folder with
+``
+git clone https://github.com/Yaboi-solo/Aether-Engine
+``
+* Run 
+``
+vendor\bin\premake\premake5.exe vs2019
+``
+in the directory you cloned the repository, assuming you are using Visual Studio 2019, to generate project files.
+* Well, I dont know, code stuff I guess..

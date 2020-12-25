@@ -8,8 +8,8 @@ int main(int argc, char** argv)
 {
 	Aether::Log::Init();
 	AT_CORE_WARN("Initialized Log!");
-	int a = 5;
-	AT_INFO("Hello! Var={0}", a);
+	AT_INFO("Hello! This is pog");
+	AT_FATAL("Im too cool!! Coolness Overload");
 
 	auto app = Aether::CreateApplication();
 	app->Run();
