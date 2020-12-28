@@ -31,7 +31,6 @@ If, by any chance, you're on another platform, by Yaboi's cruelty you cannot bui
 
 * Well, I dont know, code stuff I guess..
 
-## Shadow's thing
-So basically I'm planning on making the exact same game engine, but optimized for Linux, so Yaboi allowed me to make a branch thing. I'm probably failing. We'll see.
-
-Update: branches are confusing. https://github.com/not-samurai/Aether-Linux then.
+## Other Platform support?
+* You can get the Linux version (not as good as this, but I digress) at https://github.com/not-samurai/Aether-Linux
+    ** Be warned, it will be unprofessional
