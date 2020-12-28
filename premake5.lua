@@ -18,6 +18,9 @@ project "Aether"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "atpch.h"
+	pchsource "Aether/src/atpch.cpp"
+
 	files 
 	{
 		"%{prj.name}/src/**.h",
@@ -26,6 +29,7 @@ project "Aether"
 
 	includedirs
 	{
+		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include"
 	}
 

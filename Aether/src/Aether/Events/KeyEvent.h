@@ -1,8 +1,7 @@
 #pragma once
 
+#include "atpch.h"
 #include "Event.h"
-
-#include <sstream>
 
 namespace Aether {
 

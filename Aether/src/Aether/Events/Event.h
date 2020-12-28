@@ -1,12 +1,7 @@
 #pragma once
 
-
+#include "atpch.h"
 #include "../Core.h"
-
-
-#include <string>
-#include <functional>
-
 
 namespace Aether {
 
