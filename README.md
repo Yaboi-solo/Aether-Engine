@@ -27,3 +27,6 @@ vendor\bin\premake\premake5.exe vs2019
 ``
 in the directory you cloned the repository, assuming you are using Visual Studio 2019, to generate project files.
 * Well, I dont know, code stuff I guess..
+
+## Shadow's thing
+So basically I'm planning on making the exact same game engine, but optimized for Linux, so Yaboi allowed me to make a branch thing. I'm probably failing. We'll see.
