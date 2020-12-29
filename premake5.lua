@@ -10,6 +10,12 @@ workspace "Aether"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+--Include Directories Struct (table)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Aether/vendor/GLFW/include"
+
+include "Aether/vendor/GLFW"
+
 project "Aether"
 	location "Aether"
 	kind "SharedLib"
@@ -30,7 +36,14 @@ project "Aether"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDir.GLFW}"
+	}
+
+	links
+	{
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"

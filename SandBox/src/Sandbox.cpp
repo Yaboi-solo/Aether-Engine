@@ -5,7 +5,7 @@ class Sandbox : public Aether::Application
 public:
 	Sandbox()
 	{
-
+		
 	}
 	~Sandbox()
 	{

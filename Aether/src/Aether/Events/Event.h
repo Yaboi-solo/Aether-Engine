@@ -2,6 +2,7 @@
 
 #include "atpch.h"
 #include "../Core.h"
+#include "spdlog/fmt/ostr.h"
 
 namespace Aether {
 

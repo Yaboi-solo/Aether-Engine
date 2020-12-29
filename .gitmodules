@@ -1,3 +1,6 @@
 [submodule "Aether/vendor/spdlog"]
 	path = Aether/vendor/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "Aether\\vendor\\GLFW"]
+	path = Aether\\vendor\\GLFW
+	url = https://github.com/TheCherno/glfw

@@ -12,6 +12,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "Aether/Log.h"
+
 #ifdef AT_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif
