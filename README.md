@@ -34,3 +34,4 @@ If, by any chance, you're on another platform, by Yaboi's cruelty you cannot bui
 ## Other Platform support?
 * You can get the Linux version (not as good as this, but I digress) at https://github.com/not-samurai/Aether-Linux
     ** Be warned, it will be unprofessional
+I pretty much gave up on that, so rip
