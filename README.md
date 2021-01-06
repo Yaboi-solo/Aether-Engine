@@ -19,7 +19,7 @@ Until then, we wait. (Well actually I code but... nevermind)
 ## Getting started?
 * Clone the repository into an empty folder with
 ``
-git clone https://github.com/Yaboi-solo/Aether-Engine
+git clone --recursive https://github.com/Yaboi-solo/Aether-Engine
 ``
 * Run 
 ``
@@ -30,8 +30,3 @@ in the directory you cloned the repository, assuming you are using Visual Studio
 If, by any chance, you're on another platform, by Yaboi's cruelty you cannot build it. Rip -Shadow
 
 * If you get any errors, after building the project, make sure to set Sandbox, or your application project, as the startup project
-
-## Other Platform support?
-* You can get the Linux version (not as good as this, but I digress) at https://github.com/not-samurai/Aether-Linux
-    ** Be warned, it will be unprofessional
-I pretty much gave up on that, so rip

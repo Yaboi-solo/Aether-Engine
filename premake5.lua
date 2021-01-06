@@ -13,8 +13,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 --Include Directories Struct (table)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Aether/vendor/GLFW/include"
+IncludeDir["Glad"] = "Aether/vendor/Glad/include"
+IncludeDir["ImGui"] = "Aether/vendor/imgui"
 
 include "Aether/vendor/GLFW"
+include "Aether/vendor/Glad"
+include "Aether/vendor/imgui"
 
 project "Aether"
 	location "Aether"
@@ -37,12 +41,16 @@ project "Aether"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.ImGui}"
 	}
 
 	links
 	{
 		"GLFW",
+		"Glad",
+		"ImGui",
 		"opengl32.lib"
 	}
 
@@ -54,7 +62,8 @@ project "Aether"
 		defines
 		{
 			"AT_PLATFORM_WINDOWS",
-			"AT_BUILD_DLL"
+			"AT_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands
@@ -64,14 +73,17 @@ project "Aether"
 
 	filter "configurations:Debug"
 		defines "AT_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "AT_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "AT_DIST"
+		buildoptions "/MD"
 		optimize "On"
 
 		
@@ -113,12 +125,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "AT_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "AT_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "AT_DIST"
+		buildoptions "/MD"
 		optimize "On"

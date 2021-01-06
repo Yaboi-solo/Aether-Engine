@@ -4,3 +4,6 @@
 [submodule "Aether\\vendor\\GLFW"]
 	path = Aether\\vendor\\GLFW
 	url = https://github.com/TheCherno/glfw
+[submodule "Aether/vendor/imgui"]
+	path = Aether/vendor/imgui
+	url = https://github.com/TheCherno/imgui

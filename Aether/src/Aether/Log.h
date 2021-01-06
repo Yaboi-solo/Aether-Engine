@@ -26,9 +26,9 @@ namespace Aether {
 #define AT_CORE_FATAL(...)  ::Aether::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 //Client Log macros
-#define AT_TRACE(...)		::Aether::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define AT_INFO(...)		::Aether::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define AT_WARN(...)		::Aether::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define AT_ERROR(...)		::Aether::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define AT_FATAL(...)		::Aether::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define AT_TRACE(...)		::Aether::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define AT_INFO(...)		::Aether::Log::GetClientLogger()->info(__VA_ARGS__)
+#define AT_WARN(...)		::Aether::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define AT_ERROR(...)		::Aether::Log::GetClientLogger()->error(__VA_ARGS__)
+#define AT_FATAL(...)		::Aether::Log::GetClientLogger()->critical(__VA_ARGS__)
 
