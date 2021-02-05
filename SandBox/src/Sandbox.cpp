@@ -12,6 +12,9 @@ public:
 	{
 		 //Logs EVERY update, not recommended
 		 //AT_INFO("ExampleLayer::Update");
+
+		//if (Aether::Input::IsKeyPressed(AT_KEY_TAB))
+		//	AT_TRACE("Tab key is pressed!");
 	}
 
 	void OnEvent(Aether::Event& event) override

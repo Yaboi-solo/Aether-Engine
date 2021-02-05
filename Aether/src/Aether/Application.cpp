@@ -61,7 +61,7 @@ namespace Aether {
 				layer->OnUpdate();
 
 			auto [x, y] = Input::GetMousePosition();
-			AT_CORE_TRACE("{0}, {1}", x, y);
+			// AT_CORE_TRACE("{0}, {1}", x, y);
 
 			m_Window->OnUpdate();
 		}
