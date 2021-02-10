@@ -1,5 +1,7 @@
 #include <Aether.h>
 
+#include "imgui/imgui.h"
+
 class ExampleLayer : public Aether::Layer
 {
 public:
@@ -17,6 +19,13 @@ public:
 		//	AT_TRACE("Tab key is pressed!");
 	}
 
+	virtual void OnImGuiRender() override 
+	{
+		ImGui::Begin("Test");
+		ImGui::Text("Hello World");
+		ImGui::End();
+	}
+
 	void OnEvent(Aether::Event& event) override
 	{
 		//Logs every event, also not recommended
@@ -30,8 +39,8 @@ public:
 	Sandbox()
 	{
 		PushLayer(new ExampleLayer());
-		PushOverlay(new Aether::ImGuiLayer());
 	}
+	
 	~Sandbox()
 	{
 

@@ -7,7 +7,7 @@
 #include "Aether/Events/Event.h"
 #include "Aether/Events/ApplicationEvent.h"
 
-#include "Window.h"
+#include "Aether/ImGui/ImGuiLayer.h"
 
 namespace Aether {
 	
@@ -30,8 +30,11 @@ namespace Aether {
 		bool OnWindowClosed(WindowCloseEvent& e);
 
 		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
+
+		unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
 	private:
 		static Application* s_Instance;
 	};

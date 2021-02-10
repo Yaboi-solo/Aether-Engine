@@ -15,6 +15,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Aether/vendor/GLFW/include"
 IncludeDir["Glad"] = "Aether/vendor/Glad/include"
 IncludeDir["ImGui"] = "Aether/vendor/imgui"
+IncludeDir["glm"] = "Aether/vendor/glm"
 
 include "Aether/vendor/GLFW"
 include "Aether/vendor/Glad"
@@ -22,8 +23,10 @@ include "Aether/vendor/imgui"
 
 project "Aether"
 	location "Aether"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -35,6 +38,13 @@ project "Aether"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/glm/glm/**.hpp",
+		"%{prj.name}/vendor/glm/glm/**.inl"
+	}
+
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 
 	includedirs
@@ -43,7 +53,8 @@ project "Aether"
 		"%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
 	}
 
 	links
@@ -55,8 +66,6 @@ project "Aether"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		defines
@@ -66,32 +75,28 @@ project "Aether"
 			"GLFW_INCLUDE_NONE"
 		}
 
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
-		}
-
 	filter "configurations:Debug"
 		defines "AT_DEBUG"
 		buildoptions "/MDd"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "AT_RELEASE"
 		buildoptions "/MD"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "AT_DIST"
 		buildoptions "/MD"
-		optimize "On"
+		optimize "on"
 
 		
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
-
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -105,7 +110,9 @@ project "Sandbox"
 	includedirs
 	{
 		"Aether/vendor/spdlog/include",
-		"Aether/src"
+		"Aether/src",
+		"Aether/vendor",
+		"%{IncludeDir.glm}",
 	}
 
 	links
@@ -114,8 +121,6 @@ project "Sandbox"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		defines
@@ -126,14 +131,14 @@ project "Sandbox"
 	filter "configurations:Debug"
 		defines "AT_DEBUG"
 		buildoptions "/MDd"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "AT_RELEASE"
 		buildoptions "/MD"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "AT_DIST"
 		buildoptions "/MD"
-		optimize "On"
+		optimize "on"
