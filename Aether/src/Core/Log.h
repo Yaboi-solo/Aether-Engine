@@ -23,6 +23,8 @@ namespace Aether {
 		static void Shutdown();
 
 		static void Output(Log_Level level, const std::string& message);
+	private:
+		static std::ofstream m_File;
 	};
 }
 

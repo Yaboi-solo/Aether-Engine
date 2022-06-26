@@ -22,8 +22,14 @@ namespace Aether {
 		const char* pLayerPrefix,
 		const char* pMessage,
 		void* pUserData)
-	{
-		AT_WARN("Vulkan Debug Callback:\n	Object Type: {0}\n	Message: {1}", (int)objectType, pMessage);
+	{ 
+		switch (flags)
+		{
+		case VK_DEBUG_REPORT_ERROR_BIT_EXT: AT_ERROR("Vulkan Debug Callback:\n	Object Type: {0}\n	Message: {1}", (int)objectType, pMessage); break;
+		case VK_DEBUG_REPORT_WARNING_BIT_EXT: AT_WARN("Vulkan Debug Callback:\n	Object Type: {0}\n	Message: {1}", (int)objectType, pMessage); break;
+		case VK_DEBUG_REPORT_INFORMATION_BIT_EXT: AT_INFO("Vulkan Debug Callback:\n	Object Type: {0}\n	Message: {1}", (int)objectType, pMessage); break;
+		default: AT_TRACE("Vulkan Debug Callback:\n	Object Type: {0}\n	Message: {1}", (int)objectType, pMessage); break;
+		}
 		return VK_FALSE;
 	}
 
@@ -34,6 +40,10 @@ namespace Aether {
 
 	VulkanContext::~VulkanContext()
 	{
+		m_Device->Destroy();
+		
+		vkDestroyInstance(s_VulkanInstance, nullptr);
+		s_VulkanInstance = nullptr;
 	}
 
 	void VulkanContext::Init()
@@ -116,15 +126,22 @@ namespace Aether {
 			VK_CHECK_RESULT(vkCreateDebugReportCallbackEXT(s_VulkanInstance, &debugReportInfo, nullptr, &m_DebugReportCallback));
 		}
 
-		CreateWindowSurface(s_VulkanInstance, m_Window, nullptr, &m_Surface);
+		VK_CHECK_RESULT(CreateWindowSurface(s_VulkanInstance, m_Window, nullptr, &m_Surface));
 		AT_TRACE("Created Vulkan surface.");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Device Creation
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		m_PhysicalDevice = VulkanPhysicalDevice::Select(); 
-		m_Device = CreateScope<VulkanDevice>();
+		m_PhysicalDevice = VulkanPhysicalDevice::Select();
+
+		VkPhysicalDeviceFeatures features = {};
+		features.samplerAnisotropy = true;
+		//features.wideLines = true;
+		//features.fillModeNonSolid = true;
+		//features.independentBlend = true;
+		//features.pipelineStatisticsQuery = true;
+		m_Device = CreateRef<VulkanDevice>(m_PhysicalDevice, features);
 		
 	}
 

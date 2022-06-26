@@ -4,14 +4,10 @@
 #include "VulkanContext.h"
 
 namespace Aether {
-	VulkanDevice::VulkanDevice()
-	{
-		
-	}
 
-	VulkanDevice::~VulkanDevice()
-	{
-	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Physical Device
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	VulkanPhysicalDevice::VulkanPhysicalDevice()
 	{
@@ -67,13 +63,12 @@ namespace Aether {
 			AT_TRACE("Physical Device has {0} extensions available: ", extCount);
 			for (auto& ext : extensions)
 			{
-				m_SupportedExtensions.push_back(ext.extensionName);
+				m_SupportedExtensions.emplace(ext.extensionName);
 				AT_TRACE("		{0}", ext.extensionName);
 			}
 			
 		}
 		
-		const float defaultQueuePriority(0.0f);
 
 		m_QueueFamilyIndices = GetQueueFamilyIndices(m_PhysicalDevice);
 
@@ -86,7 +81,7 @@ namespace Aether {
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		int requestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT;
 
 		if (requestedQueueTypes & VK_QUEUE_GRAPHICS_BIT)
@@ -95,7 +90,7 @@ namespace Aether {
 			queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			queueInfo.queueFamilyIndex = m_QueueFamilyIndices.Graphics;
 			queueInfo.queueCount = 1;
-			queueInfo.pQueuePriorities = &defaultQueuePriority;
+			queueInfo.pQueuePriorities = &m_DefaultQueuePriority;
 			m_QueueCreateInfos.push_back(queueInfo);
 		}
 		
@@ -105,7 +100,7 @@ namespace Aether {
 			queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			queueInfo.queueFamilyIndex = m_QueueFamilyIndices.Compute;
 			queueInfo.queueCount = 1;
-			queueInfo.pQueuePriorities = &defaultQueuePriority;
+			queueInfo.pQueuePriorities = &m_DefaultQueuePriority;
 			m_QueueCreateInfos.push_back(queueInfo);
 		}
 
@@ -115,7 +110,7 @@ namespace Aether {
 			queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			queueInfo.queueFamilyIndex = m_QueueFamilyIndices.Transfer;
 			queueInfo.queueCount = 1;
-			queueInfo.pQueuePriorities = &defaultQueuePriority;
+			queueInfo.pQueuePriorities = &m_DefaultQueuePriority;
 			m_QueueCreateInfos.push_back(queueInfo); 
 		}
 
@@ -124,6 +119,11 @@ namespace Aether {
 
 	VulkanPhysicalDevice::~VulkanPhysicalDevice()
 	{
+	}
+
+	bool VulkanPhysicalDevice::isExtensionSupported(const std::string& extensionName)
+	{
+		return (m_SupportedExtensions.find(extensionName) != m_SupportedExtensions.end());
 	}
 
 	QueueFamilyIndices GetQueueFamilyIndices(VkPhysicalDevice device)
@@ -167,4 +167,56 @@ namespace Aether {
 	{
 		return CreateScope<VulkanPhysicalDevice>();
 	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Logical Device
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	VulkanDevice::VulkanDevice(const Ref<VulkanPhysicalDevice>& physicalDevice, VkPhysicalDeviceFeatures enabledFeatures)
+		: m_EnabledFeatures(enabledFeatures), m_PhysicalDevice(physicalDevice)
+	{
+		std::vector<const char*> deviceExtensions;
+		
+		AT_ASSERT(m_PhysicalDevice->isExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME), "Device does not support Swapchain!");
+		deviceExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+
+		VkDeviceCreateInfo deviceCreateInfo = {};
+		deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		deviceCreateInfo.queueCreateInfoCount = (uint32_t)physicalDevice->m_QueueCreateInfos.size();
+		deviceCreateInfo.pQueueCreateInfos = physicalDevice->m_QueueCreateInfos.data();
+		deviceCreateInfo.pEnabledFeatures = &enabledFeatures;
+
+		deviceCreateInfo.enabledExtensionCount = (uint32_t)deviceExtensions.size();
+		deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
+
+		VK_CHECK_RESULT(vkCreateDevice(m_PhysicalDevice->GetVulkanPhysicalDevice(), &deviceCreateInfo, nullptr, &m_LogicalDevice));
+		AT_TRACE("Created Vulkan device.");
+
+		/////////////////////
+		// Command Pools
+		/////////////////////
+
+		VkCommandPoolCreateInfo cmdPoolInfo = {};
+		cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		cmdPoolInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilyIndices.Graphics;
+		cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		VK_CHECK_RESULT(vkCreateCommandPool(m_LogicalDevice, &cmdPoolInfo, nullptr, &m_GraphicsCommandPool));
+		AT_TRACE("Created Vulkan graphics command pool.");
+		cmdPoolInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilyIndices.Compute;
+		VK_CHECK_RESULT(vkCreateCommandPool(m_LogicalDevice, &cmdPoolInfo, nullptr, &m_ComputeCommandPool));
+		AT_TRACE("Created Vulkan compute command pool.");
+	}
+
+	VulkanDevice::~VulkanDevice()
+	{
+		
+	}
+
+	void VulkanDevice::Destroy()
+	{
+		vkDeviceWaitIdle(m_LogicalDevice);
+		vkDestroyDevice(m_LogicalDevice, nullptr);
+	}
+
 }

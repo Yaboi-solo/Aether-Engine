@@ -74,12 +74,14 @@ namespace Aether {
 		int32_t showWindowCommandFlags = shouldActivate ? SW_SHOW : SW_SHOWNOACTIVATE;
 		ShowWindow(m_hWnd, showWindowCommandFlags);
 
-		m_GraphicsContext = GraphicsContext::Create(m_hWnd);
+		m_GraphicsContext = GraphicsContext::Create((void*)m_hWnd);
 		m_GraphicsContext->Init();
 	}
 
 	Win32Window::~Win32Window()
 	{
+		m_GraphicsContext.reset();
+
 		DestroyWindow(m_hWnd);
 		UnregisterClassA("Aether_Window_Class", m_hInstance);
 	}

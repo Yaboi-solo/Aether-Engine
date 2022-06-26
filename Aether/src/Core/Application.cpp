@@ -13,6 +13,8 @@ namespace Aether {
 		AT_ASSERT(!s_Instance, "Application instance already exists!");
 		s_Instance = this;
 
+		Log::Init();
+
 		AT_WARN("Initializing Aether...");
 
 		m_Window = Window::Create(WindowProperties(name));
@@ -33,6 +35,9 @@ namespace Aether {
 
 	Application::~Application()
 	{
+		AT_WARN("Shutting down...");
+
+		Log::Shutdown();
 	}
 
 	void Application::PushLayer(Layer* layer)

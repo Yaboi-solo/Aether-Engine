@@ -26,6 +26,10 @@ namespace Aether {
 		VulkanPhysicalDevice();
 		~VulkanPhysicalDevice();
 
+		bool isExtensionSupported(const std::string& extensionName);
+
+		VkPhysicalDevice GetVulkanPhysicalDevice() { return m_PhysicalDevice; }
+
 		static Scope<VulkanPhysicalDevice> Select();
 	private:
 		VkPhysicalDevice m_PhysicalDevice = nullptr;
@@ -33,10 +37,12 @@ namespace Aether {
 		VkPhysicalDeviceFeatures m_PhysicalDeviceFeatures;
 		VkPhysicalDeviceMemoryProperties m_PhysicalDeviceMemoryProperties;
 
-		std::vector<std::string> m_SupportedExtensions;
+		std::set<std::string> m_SupportedExtensions;
 		std::vector<VkDeviceQueueCreateInfo> m_QueueCreateInfos;
 
 		QueueFamilyIndices m_QueueFamilyIndices;
+
+		float m_DefaultQueuePriority = 0.0f;
 
 		friend class VulkanDevice;
 	};
@@ -45,10 +51,17 @@ namespace Aether {
 	class VulkanDevice
 	{
 	public:
-		VulkanDevice();
+		VulkanDevice(const Ref<VulkanPhysicalDevice>& physicalDevice, VkPhysicalDeviceFeatures enabledFeatures);
 		~VulkanDevice();
 
+		void Destroy();
 
+		VkQueue GetGraphicsQueue() { return m_GraphicsQueue; }
+		VkQueue GetComputeQueue() { return m_ComputeQueue; }
+
+		const Ref<VulkanPhysicalDevice>& GetPhysicalDevice() const { return m_PhysicalDevice; }
+		VkDevice GetVulkanDevice() const { return m_LogicalDevice; }
+		operator VkDevice() const { return m_LogicalDevice; }
 	private:
 		VkDevice m_LogicalDevice = nullptr;
 		Ref<VulkanPhysicalDevice> m_PhysicalDevice;
@@ -56,5 +69,8 @@ namespace Aether {
 
 		VkQueue m_GraphicsQueue;
 		VkQueue m_ComputeQueue;
+
+		VkCommandPool m_GraphicsCommandPool;
+		VkCommandPool m_ComputeCommandPool;
 	};
 }
