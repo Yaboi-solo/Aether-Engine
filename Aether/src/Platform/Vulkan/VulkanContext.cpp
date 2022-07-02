@@ -1,17 +1,13 @@
 #include "atpch.h"
 #include "VulkanContext.h"
 
-#ifdef AT_PLATFORM_WINDOWS
-#include <Windows.h>
-#include <vulkan/vulkan_win32.h>
-#endif
+#include "Core/Application.h"
 
 namespace Aether {
 
 	static bool s_Validation = true;
 
 	bool isVulkanSupported();
-	VkResult CreateWindowSurface(VkInstance instance, void* windowHandle, VkAllocationCallbacks* allocator, VkSurfaceKHR* surface);
 
 	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugCallback(
 		VkDebugReportFlagsEXT flags,
@@ -33,14 +29,25 @@ namespace Aether {
 		return VK_FALSE;
 	}
 
-	VulkanContext::VulkanContext(void* window)
+	VulkanContext::VulkanContext(void* window, uint32_t width, uint32_t height)
 	{
 		m_Window = window;
+		m_WindowWidth = width;
+		m_WindowHeight = height;
 	}
 
 	VulkanContext::~VulkanContext()
 	{
+		m_Swapchain.Destroy();
+		
 		m_Device->Destroy();
+
+		if (s_Validation)
+		{
+			auto vkDestroyDebugReportCallbackEXT = (PFN_vkDestroyDebugReportCallbackEXT)vkGetInstanceProcAddr(s_VulkanInstance, "vkDestroyDebugReportCallbackEXT");
+			AT_ASSERT(vkDestroyDebugReportCallbackEXT != NULL, "");
+			vkDestroyDebugReportCallbackEXT(s_VulkanInstance, m_DebugReportCallback, nullptr);
+		}
 		
 		vkDestroyInstance(s_VulkanInstance, nullptr);
 		s_VulkanInstance = nullptr;
@@ -110,7 +117,7 @@ namespace Aether {
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Instance and Surface Creation
+		// Instance Creation
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		VK_CHECK_RESULT(vkCreateInstance(&instanceCreateInfo, nullptr, &s_VulkanInstance));
 		AT_TRACE("Created Vulkan instance.");
@@ -125,8 +132,7 @@ namespace Aether {
 			debugReportInfo.pfnCallback = VulkanDebugCallback;
 			VK_CHECK_RESULT(vkCreateDebugReportCallbackEXT(s_VulkanInstance, &debugReportInfo, nullptr, &m_DebugReportCallback));
 		}
-
-		VK_CHECK_RESULT(CreateWindowSurface(s_VulkanInstance, m_Window, nullptr, &m_Surface));
+		
 		AT_TRACE("Created Vulkan surface.");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,11 +148,23 @@ namespace Aether {
 		//features.independentBlend = true;
 		//features.pipelineStatisticsQuery = true;
 		m_Device = CreateRef<VulkanDevice>(m_PhysicalDevice, features);
+
+		m_Allocator = VulkanAllocator(m_Device, "Default");
+
+		m_Swapchain.Init(s_VulkanInstance, m_Device);
+
+		m_Swapchain.CreateSurface(m_Window);
 		
+		m_Swapchain.Create(m_WindowWidth, m_WindowHeight);
 	}
 
 	void VulkanContext::SwapBuffers()
 	{
+	}
+
+	void VulkanContext::Resize(uint32_t width, uint32_t height)
+	{
+		m_Swapchain.Resize(width, height);
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,20 +188,5 @@ namespace Aether {
 
 		AT_FATAL("Required Vulkan version (1.2) not supported!");
 		return false;
-	}
-
-	VkResult CreateWindowSurface(VkInstance instance, void* windowHandle, VkAllocationCallbacks* allocator, VkSurfaceKHR* surface)
-	{
-#ifdef AT_PLATFORM_WINDOWS
-		HWND hWnd = (HWND)windowHandle;
-
-		VkWin32SurfaceCreateInfoKHR createInfo = {};
-		createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-		createInfo.hwnd = hWnd;
-		createInfo.hinstance = GetModuleHandleA(0);
-
-		VkResult result = vkCreateWin32SurfaceKHR(instance, &createInfo, allocator, surface);
-		return result;
-#endif
 	}
 }

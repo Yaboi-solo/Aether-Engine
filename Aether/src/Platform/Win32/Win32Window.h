@@ -24,6 +24,9 @@ namespace Aether {
 
 		virtual Ref<GraphicsContext> GetGraphicsContext() override { return m_GraphicsContext; }
 	private:
+		virtual void Init();
+		virtual void Shutdown();
+	private:
 		struct WindowData
 		{
 			uint32_t Width;

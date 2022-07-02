@@ -28,7 +28,9 @@ namespace Aether {
 
 		bool isExtensionSupported(const std::string& extensionName);
 
-		VkPhysicalDevice GetVulkanPhysicalDevice() { return m_PhysicalDevice; }
+		VkPhysicalDevice GetVulkanPhysicalDevice() const { return m_PhysicalDevice; }
+
+		uint32_t GetMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags properties);
 
 		static Scope<VulkanPhysicalDevice> Select();
 	private:
@@ -61,7 +63,6 @@ namespace Aether {
 
 		const Ref<VulkanPhysicalDevice>& GetPhysicalDevice() const { return m_PhysicalDevice; }
 		VkDevice GetVulkanDevice() const { return m_LogicalDevice; }
-		operator VkDevice() const { return m_LogicalDevice; }
 	private:
 		VkDevice m_LogicalDevice = nullptr;
 		Ref<VulkanPhysicalDevice> m_PhysicalDevice;

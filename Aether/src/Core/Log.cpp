@@ -15,20 +15,17 @@ namespace Aether {
 		std::string logFileName = "AetherLogOutput.log";
 
 		
-		if (!std::filesystem::exists(logFileName))
+		if (std::filesystem::exists(logFileName))
 		{
-			std::ofstream outFile(logFileName);
-			outFile.close();
-
-			m_File.open(logFileName, std::ios::trunc | std::ios::out || std::ios::in);
-
-			AT_TRACE("Created Log file.");
+			std::filesystem::remove(logFileName);
 		}
-		else {
-			m_File.open(logFileName, std::ios::trunc | std::ios::out || std::ios::in);
+		
+		std::ofstream outFile(logFileName);
+		outFile.close();
 
-			AT_TRACE("Log file already exists... Erasing content.");
-		}
+		m_File.open(logFileName, std::ios::trunc | std::ios::out || std::ios::in);
+
+		AT_TRACE("Created Log file.");
 	}
 
 	void Log::Shutdown()

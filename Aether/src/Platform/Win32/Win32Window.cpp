@@ -15,7 +15,26 @@ namespace Aether {
 		m_Data.Title = properties.Title;
 		m_Data.VSync = false;
 
+		Init();
+	}
 
+	Win32Window::~Win32Window()
+	{
+		Shutdown();
+	}
+
+	void Win32Window::Update()
+	{
+		MSG message;
+		while (PeekMessageA(&message, NULL, 0, 0, PM_REMOVE)) {
+			TranslateMessage(&message);
+			DispatchMessageA(&message);
+		}
+		m_GraphicsContext->SwapBuffers();
+	}
+
+	void Win32Window::Init()
+	{
 		m_hInstance = GetModuleHandleA(0);
 
 		HICON icon = LoadIcon(m_hInstance, IDI_APPLICATION);
@@ -74,26 +93,16 @@ namespace Aether {
 		int32_t showWindowCommandFlags = shouldActivate ? SW_SHOW : SW_SHOWNOACTIVATE;
 		ShowWindow(m_hWnd, showWindowCommandFlags);
 
-		m_GraphicsContext = GraphicsContext::Create((void*)m_hWnd);
+		m_GraphicsContext = GraphicsContext::Create((void*)m_hWnd, m_Data.Width, m_Data.Height);
 		m_GraphicsContext->Init();
 	}
 
-	Win32Window::~Win32Window()
+	void Win32Window::Shutdown()
 	{
 		m_GraphicsContext.reset();
 
 		DestroyWindow(m_hWnd);
 		UnregisterClassA("Aether_Window_Class", m_hInstance);
-	}
-
-	void Win32Window::Update()
-	{
-		MSG message;
-		while (PeekMessageA(&message, NULL, 0, 0, PM_REMOVE)) {
-			TranslateMessage(&message);
-			DispatchMessageA(&message);
-		}
-		m_GraphicsContext->SwapBuffers();
 	}
 
 	LRESULT CALLBACK Message_Proc(HWND hWnd, uint32_t msg, WPARAM wParam, LPARAM lParam)

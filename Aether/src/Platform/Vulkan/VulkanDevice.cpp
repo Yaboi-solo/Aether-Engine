@@ -40,7 +40,7 @@ namespace Aether {
 		if (!selectedDevice)
 		{
 			AT_TRACE("Could not find discrete GPU. Selecting available GPU.");
-			selectedDevice = physicalDevices.front();
+			selectedDevice = physicalDevices[0];
 		}
 
 		AT_ASSERT(selectedDevice, "Could not find any physical devices!");
@@ -163,6 +163,24 @@ namespace Aether {
 		return indices;
 	}
 
+	uint32_t VulkanPhysicalDevice::GetMemoryTypeIndex(uint32_t typeBits, VkMemoryPropertyFlags properties)
+	{
+		for (uint32_t i = 0; i < m_PhysicalDeviceMemoryProperties.memoryTypeCount; i++)
+		{
+			if ((typeBits & 1) == 1)
+			{
+				if ((m_PhysicalDeviceMemoryProperties.memoryTypes[i].propertyFlags & properties) == properties)
+				{
+					return i;
+				}
+			}
+			typeBits >>= 1;
+		}
+
+		AT_ASSERT(false, "Could not find a suitable memory type!");
+		return UINT32_MAX;
+	}
+
 	Scope<VulkanPhysicalDevice> VulkanPhysicalDevice::Select()
 	{
 		return CreateScope<VulkanPhysicalDevice>();
@@ -193,19 +211,22 @@ namespace Aether {
 		VK_CHECK_RESULT(vkCreateDevice(m_PhysicalDevice->GetVulkanPhysicalDevice(), &deviceCreateInfo, nullptr, &m_LogicalDevice));
 		AT_TRACE("Created Vulkan device.");
 
+		vkGetDeviceQueue(m_LogicalDevice, m_PhysicalDevice->m_QueueFamilyIndices.Graphics, 0, &m_GraphicsQueue);
+		vkGetDeviceQueue(m_LogicalDevice, m_PhysicalDevice->m_QueueFamilyIndices.Compute, 0, &m_ComputeQueue);
+
 		/////////////////////
 		// Command Pools
 		/////////////////////
 
-		VkCommandPoolCreateInfo cmdPoolInfo = {};
-		cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		cmdPoolInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilyIndices.Graphics;
-		cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-		VK_CHECK_RESULT(vkCreateCommandPool(m_LogicalDevice, &cmdPoolInfo, nullptr, &m_GraphicsCommandPool));
-		AT_TRACE("Created Vulkan graphics command pool.");
-		cmdPoolInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilyIndices.Compute;
-		VK_CHECK_RESULT(vkCreateCommandPool(m_LogicalDevice, &cmdPoolInfo, nullptr, &m_ComputeCommandPool));
-		AT_TRACE("Created Vulkan compute command pool.");
+		//VkCommandPoolCreateInfo cmdPoolInfo = {};
+		//cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		//cmdPoolInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilyIndices.Graphics;
+		//cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		//VK_CHECK_RESULT(vkCreateCommandPool(m_LogicalDevice, &cmdPoolInfo, nullptr, &m_GraphicsCommandPool));
+		//AT_TRACE("Created Vulkan graphics command pool.");
+		//cmdPoolInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilyIndices.Compute;
+		//VK_CHECK_RESULT(vkCreateCommandPool(m_LogicalDevice, &cmdPoolInfo, nullptr, &m_ComputeCommandPool));
+		//AT_TRACE("Created Vulkan compute command pool.");
 	}
 
 	VulkanDevice::~VulkanDevice()
@@ -215,6 +236,9 @@ namespace Aether {
 
 	void VulkanDevice::Destroy()
 	{
+		//vkDestroyCommandPool(m_LogicalDevice, m_GraphicsCommandPool, nullptr);
+		//vkDestroyCommandPool(m_LogicalDevice, m_ComputeCommandPool, nullptr);
+
 		vkDeviceWaitIdle(m_LogicalDevice);
 		vkDestroyDevice(m_LogicalDevice, nullptr);
 	}

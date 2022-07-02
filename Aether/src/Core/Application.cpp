@@ -3,6 +3,8 @@
 
 #include "Event/ApplicationEvent.h"
 
+#include "Renderer/Renderer.h"
+
 namespace Aether {
 
 	Application* Application::s_Instance = nullptr;
@@ -26,9 +28,11 @@ namespace Aether {
 			});
 		EventManager::On<WindowResizeEvent>([this](const Event& e)
 			{
-				//WindowResizeEvent event = (const WindowResizeEvent&)e;
+				WindowResizeEvent event = (const WindowResizeEvent&)e;
+				Renderer::Resize(event.Width, event.Height);
 			});
 
+		Renderer::Init();
 
 		m_Running = true;
 	}
@@ -36,6 +40,8 @@ namespace Aether {
 	Application::~Application()
 	{
 		AT_WARN("Shutting down...");
+
+		Renderer::Shutdown();
 
 		Log::Shutdown();
 	}
@@ -62,8 +68,12 @@ namespace Aether {
 		while (m_Running)
 		{
 
+			Renderer::BeginFrame();
+
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
+
+			Renderer::EndFrame();
 
 			m_Window->Update();
 		}

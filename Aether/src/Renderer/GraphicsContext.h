@@ -10,6 +10,6 @@ namespace Aether {
 		virtual void Init() = 0;
 		virtual void SwapBuffers() = 0;
 
-		static Ref<GraphicsContext> Create(void* window);
+		static Ref<GraphicsContext> Create(void* window, uint32_t width, uint32_t height);
 	};
 }
