@@ -1,17 +1,17 @@
 #include "atpch.h"
+#include "VertexBuffer.h"
+
 #include "RendererAPI.h"
 
-#include "Platform/Vulkan/VulkanRendererAPI.h"
+#include "Platform/Vulkan/VulkanVertexBuffer.h"
 
 namespace Aether {
-	RendererAPI::API RendererAPI::s_API = RendererAPI::Vulkan;
-
-	Ref<RendererAPI> RendererAPI::Create()
+	Ref<VertexBuffer> VertexBuffer::Create(void* data, uint32_t size, VertexBufferUsage usage)
 	{
 		switch (RendererAPI::GetCurrentAPI())
 		{
 		case RendererAPI::None: AT_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
-		case RendererAPI::Vulkan: return CreateRef<VulkanRendererAPI>();
+		case RendererAPI::Vulkan: return CreateRef<VulkanVertexBuffer>(data, size, usage);
 		}
 
 		AT_ASSERT(false, "Unknown RendererAPI!");

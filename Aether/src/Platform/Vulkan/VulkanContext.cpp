@@ -38,7 +38,11 @@ namespace Aether {
 
 	VulkanContext::~VulkanContext()
 	{
+		vkDestroyCommandPool(m_Device->GetVulkanDevice(), m_TransferCommandPool, nullptr);
+		
 		m_Swapchain.Destroy();
+
+		m_Swapchain.DestroySurface();
 		
 		m_Device->Destroy();
 
@@ -149,17 +153,21 @@ namespace Aether {
 		//features.pipelineStatisticsQuery = true;
 		m_Device = CreateRef<VulkanDevice>(m_PhysicalDevice, features);
 
-		m_Allocator = VulkanAllocator(m_Device, "Default");
-
 		m_Swapchain.Init(s_VulkanInstance, m_Device);
 
 		m_Swapchain.CreateSurface(m_Window);
+		AT_TRACE("Created surface.");
 		
 		m_Swapchain.Create(m_WindowWidth, m_WindowHeight);
-	}
+		AT_TRACE("Created swapchain.");
 
-	void VulkanContext::SwapBuffers()
-	{
+		QueueFamilyIndices indices = GetQueueFamilyIndices(m_PhysicalDevice->GetVulkanPhysicalDevice());
+			
+		VkCommandPoolCreateInfo commandPoolInfo = {};
+		commandPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		commandPoolInfo.queueFamilyIndex = indices.Transfer;
+		commandPoolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
+		VK_CHECK_RESULT(vkCreateCommandPool(m_Device->GetVulkanDevice(), &commandPoolInfo, nullptr, &m_TransferCommandPool));
 	}
 
 	void VulkanContext::Resize(uint32_t width, uint32_t height)

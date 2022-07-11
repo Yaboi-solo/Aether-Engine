@@ -1,9 +1,11 @@
 
 include "Dependencies.lua"
 
+startPrj = "Sandbox"
+
 workspace "Aether-Engine"
     architecture "x86_64"
-    startproject "Sandbox"
+    startproject "%{startPrj}"
 
     configurations
     {
@@ -18,6 +20,7 @@ workspace "Aether-Engine"
 
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
 
 group ""
 include "Aether"

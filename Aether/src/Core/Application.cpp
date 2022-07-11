@@ -30,10 +30,17 @@ namespace Aether {
 			{
 				WindowResizeEvent event = (const WindowResizeEvent&)e;
 				Renderer::Resize(event.Width, event.Height);
+				m_Minimized = false;
+			});
+		EventManager::On<WindowMinimizeEvent>([this](const Event& e)
+			{
+				WindowMinimizeEvent event = (const WindowMinimizeEvent&)e;
+				m_Minimized = event.isMinimized;
 			});
 
 		Renderer::Init();
 
+		m_Minimized = false;
 		m_Running = true;
 	}
 
@@ -67,14 +74,16 @@ namespace Aether {
 	{
 		while (m_Running)
 		{
+			if (!m_Minimized)
+			{
+				Renderer::BeginFrame();
 
-			Renderer::BeginFrame();
+				for (Layer* layer : m_LayerStack)
+					layer->OnUpdate();
 
-			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				Renderer::EndFrame();
 
-			Renderer::EndFrame();
-
+			}
 			m_Window->Update();
 		}
 	}

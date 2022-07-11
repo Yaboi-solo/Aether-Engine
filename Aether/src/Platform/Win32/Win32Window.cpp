@@ -30,7 +30,6 @@ namespace Aether {
 			TranslateMessage(&message);
 			DispatchMessageA(&message);
 		}
-		m_GraphicsContext->SwapBuffers();
 	}
 
 	void Win32Window::Init()
@@ -120,7 +119,14 @@ namespace Aether {
 			GetClientRect(hWnd, &r);
 			uint32_t width = r.right - r.left;
 			uint32_t height = r.bottom - r.top;
-			EventManager::Emit(WindowResizeEvent(width, height));
+			if (width > 0 && height > 0)
+				EventManager::Emit(WindowResizeEvent(width, height));
+			else
+			{
+				EventManager::Emit(WindowMinimizeEvent(wParam == SIZE_MINIMIZED ? true : false));
+				SetWindowPos(hWnd, 0, CW_USEDEFAULT, CW_USEDEFAULT, 1600, 900, SWP_NOMOVE | SWP_NOZORDER);
+				ShowWindow(hWnd, SW_SHOWMINIMIZED);
+			}
 		} break;
 		}
 

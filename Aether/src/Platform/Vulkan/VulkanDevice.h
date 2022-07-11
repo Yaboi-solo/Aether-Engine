@@ -60,6 +60,7 @@ namespace Aether {
 
 		VkQueue GetGraphicsQueue() { return m_GraphicsQueue; }
 		VkQueue GetComputeQueue() { return m_ComputeQueue; }
+		VkQueue GetTransferQueue() { return m_TransferQueue; }
 
 		const Ref<VulkanPhysicalDevice>& GetPhysicalDevice() const { return m_PhysicalDevice; }
 		VkDevice GetVulkanDevice() const { return m_LogicalDevice; }
@@ -70,6 +71,7 @@ namespace Aether {
 
 		VkQueue m_GraphicsQueue;
 		VkQueue m_ComputeQueue;
+		VkQueue m_TransferQueue;
 
 		VkCommandPool m_GraphicsCommandPool;
 		VkCommandPool m_ComputeCommandPool;

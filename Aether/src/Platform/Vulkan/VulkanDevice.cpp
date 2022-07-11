@@ -64,9 +64,8 @@ namespace Aether {
 			for (auto& ext : extensions)
 			{
 				m_SupportedExtensions.emplace(ext.extensionName);
-				AT_TRACE("		{0}", ext.extensionName);
+				//AT_TRACE("		{0}", ext.extensionName);
 			}
-			
 		}
 		
 
@@ -82,7 +81,7 @@ namespace Aether {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		int requestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT;
+		int requestedQueueTypes = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT;
 
 		if (requestedQueueTypes & VK_QUEUE_GRAPHICS_BIT)
 		{
@@ -213,32 +212,15 @@ namespace Aether {
 
 		vkGetDeviceQueue(m_LogicalDevice, m_PhysicalDevice->m_QueueFamilyIndices.Graphics, 0, &m_GraphicsQueue);
 		vkGetDeviceQueue(m_LogicalDevice, m_PhysicalDevice->m_QueueFamilyIndices.Compute, 0, &m_ComputeQueue);
-
-		/////////////////////
-		// Command Pools
-		/////////////////////
-
-		//VkCommandPoolCreateInfo cmdPoolInfo = {};
-		//cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		//cmdPoolInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilyIndices.Graphics;
-		//cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-		//VK_CHECK_RESULT(vkCreateCommandPool(m_LogicalDevice, &cmdPoolInfo, nullptr, &m_GraphicsCommandPool));
-		//AT_TRACE("Created Vulkan graphics command pool.");
-		//cmdPoolInfo.queueFamilyIndex = m_PhysicalDevice->m_QueueFamilyIndices.Compute;
-		//VK_CHECK_RESULT(vkCreateCommandPool(m_LogicalDevice, &cmdPoolInfo, nullptr, &m_ComputeCommandPool));
-		//AT_TRACE("Created Vulkan compute command pool.");
+		vkGetDeviceQueue(m_LogicalDevice, m_PhysicalDevice->m_QueueFamilyIndices.Transfer, 0, &m_TransferQueue);
 	}
 
 	VulkanDevice::~VulkanDevice()
 	{
-		
 	}
 
 	void VulkanDevice::Destroy()
 	{
-		//vkDestroyCommandPool(m_LogicalDevice, m_GraphicsCommandPool, nullptr);
-		//vkDestroyCommandPool(m_LogicalDevice, m_ComputeCommandPool, nullptr);
-
 		vkDeviceWaitIdle(m_LogicalDevice);
 		vkDestroyDevice(m_LogicalDevice, nullptr);
 	}

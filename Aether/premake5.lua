@@ -35,7 +35,8 @@ project "Aether"
 
     links
     {
-        "%{Library.Vulkan}"
+        "%{Library.Vulkan}",
+        "%{Library.ShaderC}"
     }
 
     filter "system:windows"
@@ -43,6 +44,16 @@ project "Aether"
 
         defines
         {
+        }
+
+        prebuildcommands
+        {
+            "rmdir %{wks.location}bin\\" .. outputdir .. "\\%{startPrj}\\assets\\ /q /s"
+        }
+
+        postbuildcommands
+        {
+            " xcopy %{wks.location}%{prj.name}\\assets\\ %{wks.location}bin\\" .. outputdir .. "\\%{startPrj}\\assets\\ /E /H /C /I"
         }
 
     filter "configurations:Debug"

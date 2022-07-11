@@ -20,4 +20,13 @@ namespace Aether {
 		}
 	};
 
+	struct WindowMinimizeEvent : Event
+	{
+		bool isMinimized;
+		WindowMinimizeEvent(bool isminimized)
+			: isMinimized(isminimized)
+		{
+		}
+	};
+
 }

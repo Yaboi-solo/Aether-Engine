@@ -30,6 +30,7 @@ namespace Aether {
 	private:
 		std::string m_Name;
 		bool m_Running;
+		bool m_Minimized;
 
 		Scope<Window> m_Window;
 

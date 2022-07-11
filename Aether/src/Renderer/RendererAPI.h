@@ -1,5 +1,7 @@
 #pragma once
 
+#include "IndexBuffer.h"
+
 namespace Aether {
 	class RendererAPI
 	{
@@ -17,6 +19,8 @@ namespace Aether {
 		virtual void EndFrame() = 0;
 
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
+
+		virtual void DrawIndexed(const Ref<IndexBuffer>& indexBuffer) = 0;
 
 		static Ref<RendererAPI> Create();
 

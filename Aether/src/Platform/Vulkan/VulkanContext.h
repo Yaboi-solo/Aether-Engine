@@ -4,7 +4,6 @@
 
 #include "Vulkan.h"
 #include "VulkanDevice.h"
-#include "VulkanAllocator.h"
 #include "VulkanSwapchain.h"
 
 #include "Renderer/Renderer.h"
@@ -17,14 +16,13 @@ namespace Aether {
 		virtual ~VulkanContext() override;
 
 		virtual void Init() override;
-		virtual void SwapBuffers() override;
 
 		Ref<VulkanDevice> GetDevice() { return m_Device; }
-
-		VulkanSwapchain GetSwapchain() const { return m_Swapchain; }
+		VulkanSwapchain* GetSwapchain() { return &m_Swapchain; }
 		
-		static VkInstance GetInstance() { return s_VulkanInstance; }
+		const VkCommandPool& GetTransferCommandPool() const { return m_TransferCommandPool; }
 
+		static VkInstance GetInstance() { return s_VulkanInstance; }
 		static Ref<VulkanContext> Get() { return std::dynamic_pointer_cast<VulkanContext, GraphicsContext>(Renderer::GetContext()); }
 
 		void Resize(uint32_t width, uint32_t height);
@@ -38,8 +36,8 @@ namespace Aether {
 		Ref<VulkanPhysicalDevice> m_PhysicalDevice;
 		Ref<VulkanDevice> m_Device;
 
-		VulkanAllocator m_Allocator;
-
 		VulkanSwapchain m_Swapchain;
+
+		VkCommandPool m_TransferCommandPool;
 	};
 }

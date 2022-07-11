@@ -15,6 +15,8 @@ namespace Aether {
 		virtual void EndFrame() override;
 		
 		virtual void Resize(uint32_t width, uint32_t height) override;
+
+		virtual void DrawIndexed(const Ref<IndexBuffer>& indexBuffer) override;
 	private:
 		Ref<VulkanContext> m_Context;
 	};

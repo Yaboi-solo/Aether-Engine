@@ -1,18 +1,19 @@
 #include "atpch.h"
+#include "IndexBuffer.h"
+
 #include "RendererAPI.h"
 
-#include "Platform/Vulkan/VulkanRendererAPI.h"
+#include "Platform/Vulkan/VulkanIndexBuffer.h"
 
 namespace Aether {
-	RendererAPI::API RendererAPI::s_API = RendererAPI::Vulkan;
-
-	Ref<RendererAPI> RendererAPI::Create()
+	Ref<IndexBuffer> IndexBuffer::Create(void* data, uint32_t size)
 	{
 		switch (RendererAPI::GetCurrentAPI())
 		{
 		case RendererAPI::None: AT_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
-		case RendererAPI::Vulkan: return CreateRef<VulkanRendererAPI>();
+		case RendererAPI::Vulkan: return CreateRef<VulkanIndexBuffer>(data, size);
 		}
+
 
 		AT_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
